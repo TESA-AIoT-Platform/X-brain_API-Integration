@@ -1,0 +1,132 @@
+{
+  "description": "Schema combining 4 sensor(s)",
+  "properties": {
+    "heart_rate": {
+      "maximum": 250,
+      "minimum": 30,
+      "title": "Heart Rate (BPM)",
+      "type": "integer"
+    },
+    "heart_rate_bpm": {
+      "maximum": 250,
+      "minimum": 30,
+      "type": "integer"
+    },
+    "heart_rate_unit": {
+      "default": "bpm",
+      "enum": [
+        "bpm"
+      ],
+      "title": "Heart Rate Unit",
+      "type": "string"
+    },
+    "motion": {
+      "description": "Movement affects accuracy",
+      "title": "Motion Detected",
+      "type": "boolean"
+    },
+    "perfusion_index": {
+      "maximum": 20,
+      "minimum": 0,
+      "title": "Perfusion Index",
+      "type": "number"
+    },
+    "pulse_rate": {
+      "maximum": 250,
+      "minimum": 30,
+      "title": "Pulse Rate (BPM)",
+      "type": "integer"
+    },
+    "pulse_rate_unit": {
+      "default": "bpm",
+      "enum": [
+        "bpm"
+      ],
+      "title": "Pulse Rate Unit",
+      "type": "string"
+    },
+    "qrs_duration_ms": {
+      "maximum": 200,
+      "minimum": 40,
+      "type": "number"
+    },
+    "qt_interval_ms": {
+      "maximum": 700,
+      "minimum": 200,
+      "type": "number"
+    },
+    "rhythm": {
+      "enum": [
+        "sinus",
+        "afib",
+        "svt",
+        "vt",
+        "unknown"
+      ],
+      "type": "string"
+    },
+    "rr_interval_ms": {
+      "maximum": 2000,
+      "minimum": 200,
+      "type": "number"
+    },
+    "signal_quality": {
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Signal Quality (%)",
+      "type": "integer"
+    },
+    "site": {
+      "enum": [
+        "oral",
+        "tympanic",
+        "axillary",
+        "rectal",
+        "temporal",
+        "core"
+      ],
+      "type": "string"
+    },
+    "spo2": {
+      "maximum": 100,
+      "minimum": 0,
+      "title": "SpO2 Level (%)",
+      "type": "integer"
+    },
+    "spo2_unit": {
+      "default": "%",
+      "enum": [
+        "%"
+      ],
+      "title": "SpO2 Unit",
+      "type": "string"
+    },
+    "temperature": {
+      "maximum": 45,
+      "minimum": 30,
+      "title": "Temperature",
+      "type": "number"
+    },
+    "temperature_unit": {
+      "default": "°C",
+      "enum": [
+        "°C",
+        "°F"
+      ],
+      "type": "string"
+    },
+    "timestamp": {
+      "format": "date-time",
+      "type": "string"
+    }
+  },
+  "required": [
+    "spo2",
+    "timestamp",
+    "temperature",
+    "heart_rate",
+    "heart_rate_bpm"
+  ],
+  "title": "Combined Blood Oxygen Sensor (SpO2) + Body Temperature + Heart Rate Sensor + ECG Summary Schema",
+  "type": "object"
+}

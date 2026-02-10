@@ -1,0 +1,24 @@
+{
+  "protocol": "mqtts",
+  "host": "mqtt.tesaiot.com",
+  "port": 14567,
+  "transport": "quic",
+  "tls": {
+    "enabled": true,
+    "version": "1.3",
+    "ca_file": "ca-chain.pem",
+    "verify_server": true,
+    "verify_mode": "server-only"
+  },
+  "auth": {
+    "method": "username_password",
+    "username": "b6b8086b-a67a-4e31-9858-e61074190219",
+    "password": "<retrieve-via-password-reset>"
+  },
+  "endpoint": "mqtts://mqtt.tesaiot.com:14567",
+  "connection": {
+    "keepalive": 60,
+    "clean_session": true,
+    "connect_timeout": 10
+  }
+}
