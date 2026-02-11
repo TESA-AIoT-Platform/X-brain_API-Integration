@@ -1,102 +1,155 @@
-# TESA IoT Device → Platform (Server‑TLS) — HTTPS or MQTTS via Mongoose
+# 🔧 Device → TESAIoT → X-brain Integration (HTTPS Server-TLS)
 
-Unified, beginner-friendly C example that can send telemetry over either:
-- HTTPS Server‑TLS (API key + CA)
-- MQTTS Server‑TLS (username/password + CA)
-
-Uses Cesanta Mongoose single-file library, TLS backends: OpenSSL, mbedTLS, or wolfSSL.
-
-> Licensing: all source helpers in this folder ship with the Apache 2.0 header
-> (`Copyright (c) 2025 TESAIoT Platform (TESA)`), making the tutorial safe to
-> reuse inside your own lab repos.
+> 🇹🇭 ตัวอย่างการเชื่อมต่ออุปกรณ์ IoT เข้าสู่ TESAIoT Platform ผ่าน HTTPS (Server-TLS) และเตรียมข้อมูลสำหรับส่งต่อไปยัง X-brain Platform
+> 🇬🇧 Example demonstrating secure device-to-platform connectivity using HTTPS Server-TLS, designed for downstream integration with X-brain Platform.
 
 ---
-TL;DR Quick Start (EN)
-- Download Server‑TLS bundles in Admin UI → Credentials (include_password / include_api_key if needed)
-- `make prepare` to sync into `./certs_credentials`
-- Run for 2 minutes (every 10s):
-  - HTTPS: `COMM_MODE=HTTPS API_BASE_URL=https://tesaiot.com CERTS_DIR=./certs_credentials ./device_client --period 2 --interval 10`
-  - MQTTS: `COMM_MODE=MQTTS MQTT_HOST=mqtt.tesaiot.com MQTT_PORT=8884 CERTS_DIR=./certs_credentials ./device_client --period 2 --interval 10`
 
-สรุปเริ่มต้นเร็ว (TH)
-- ดาวน์โหลด Server‑TLS bundles จาก Admin UI (เลือก include_password/include_api_key เมื่อจำเป็น)
-- รัน `make prepare` เพื่อซิงค์ให้ตรงกับฐานข้อมูล
-- รันทดสอบ 2 นาที (ส่งทุก 10 วินาที): HTTPS และ MQTTS ตามคำสั่งด้านบน
+# 🎯 Objective
 
-Directory Structure
+## 🇹🇭
 
-```text
-.
-├── scripts/
-│   └── sync_credentials.sh
-├── config.h
+ตัวอย่างนี้สาธิต:
+
+* Device ส่ง telemetry ผ่าน HTTPS Server-TLS
+* ใช้ API Key authentication
+* ใช้ credential bundle จาก TESAIoT Admin UI
+* โครงสร้าง payload แบบ medical / environment sensor schema
+* เตรียม data pipeline สำหรับ X-brain analytics
+
+## 🇬🇧
+
+This example demonstrates:
+
+* HTTPS ingestion using Server-TLS
+* API key authentication
+* Device credential bundle usage
+* Structured telemetry payload
+* Compatibility with X-brain data ingestion
+
+---
+
+# 🧭 Architecture
+
+```
+IoT Device
+   |
+   | HTTPS + Server TLS
+   v
+TESAIoT Platform
+   |
+   | REST Integration
+   v
+X-brain Platform
+```
+
+---
+
+# 📂 Directory Structure
+
+```
+device-to-platform/serverTLS/
+├── main.c
 ├── data_schema.c
-├── data_schema.h
-├── main.c                   # selects HTTPS or MQTTS via env COMM_MODE
-├── Makefile                 # portable, fetches Mongoose on demand
-├── README.md
-├── certs_credentials/       # place downloaded bundle here
-└── ../common-c/             # shared Mongoose client (auto-downloaded)
+├── scripts/
+├── certs_credentials/
+└── CLI_Python/
 ```
 
-Credentials
+---
 
-- Get Device02 Server‑TLS bundle from Admin UI → Credentials → “Download Server‑TLS bundle”.
-- Then:
+# 🔐 Credentials Setup
 
-```bash
-make prepare
+## 🇹🇭
+
+1. เข้า Admin UI:
+
+[https://admin.tesaiot.com/devices](https://admin.tesaiot.com/devices)
+
+2. สร้าง Device
+3. Download Server-TLS credentials
+4. แตกไฟล์ใส่:
+
+```
+certs_credentials/
 ```
 
-Build / ติดตั้งไลบรารี
+ต้องมีไฟล์:
 
-English
-- The Makefile auto-fetches Mongoose into `../common-c/` on first build.
-- TLS backends supported: OpenSSL (default), mbedTLS, wolfSSL. Pick via `TLS_BACKEND=...`.
-- Install system deps per OS:
-  - Debian/Ubuntu (incl. Raspberry Pi):
-    - OpenSSL: `sudo apt-get update && sudo apt-get install -y build-essential pkg-config libssl-dev`
-    - mbedTLS: `sudo apt-get install -y build-essential pkg-config libmbedtls-dev`
-    - wolfSSL: `sudo apt-get install -y build-essential pkg-config libwolfssl-dev`
-  - macOS (Homebrew): `brew install openssl@3`
-    - If not auto-detected: `export CPPFLAGS=$(brew --prefix openssl@3)/include` and `export LDFLAGS="-L$(brew --prefix openssl@3)/lib"`
-- Build:
-```bash
-# Default: OpenSSL backend
-make
-
-# Choose TLS backend
-make TLS_BACKEND=mbedtls
-make TLS_BACKEND=wolfssl
-
-# Print deps guidance for your OS
-make deps
+```
+api_key.txt
+device_id.txt
+mqtt_username.txt
+mqtt_password.txt
+ca_certificate.pem
 ```
 
-ภาษาไทย
-- Makefile จะดาวน์โหลด Mongoose ไปไว้ที่ `../common-c/` ให้อัตโนมัติเมื่อ build ครั้งแรก
-- รองรับ TLS backend: OpenSSL (ค่าเริ่มต้น), mbedTLS, wolfSSL กำหนดด้วย `TLS_BACKEND=...`
-- ติดตั้งแพ็กเกจตามระบบปฏิบัติการ:
-  - Debian/Ubuntu (รวมถึง Raspberry Pi):
-    - OpenSSL: `sudo apt-get update && sudo apt-get install -y build-essential pkg-config libssl-dev`
-    - mbedTLS: `sudo apt-get install -y build-essential pkg-config libmbedtls-dev`
-    - wolfSSL: `sudo apt-get install -y build-essential pkg-config libwolfssl-dev`
-  - macOS (Homebrew): `brew install openssl@3` และตั้งค่า `CPPFLAGS/LDFLAGS` หากระบบหาไม่เจออัตโนมัติ
-- คำสั่ง build และตรวจสอบ dependencies: ดูตัวอย่างด้านบน (make, make TLS_BACKEND=..., make deps)
+> HTTPS mode ใช้เฉพาะ:
 
-Install prerequisites
+* api_key.txt
+* device_id.txt
+* CA certificate
 
-- Linux (Ubuntu/Debian):
-  - OpenSSL: `sudo apt-get install -y build-essential libssl-dev`
-  - mbedTLS: `sudo apt-get install -y libmbedtls-dev`
-  - wolfSSL: `sudo apt-get install -y libwolfssl-dev`
-- macOS (Homebrew):
-  - OpenSSL: `brew install openssl@3`
-  - Optionally export `CPPFLAGS`/`LDFLAGS` if not auto-detected.
-- Raspberry Pi OS: same as Ubuntu/Debian instructions.
-- RTOS: use this code as reference; integrate per RTOS Mongoose porting guide.
+---
 
-Run — HTTPS (Server‑TLS)
+## 🇬🇧
+
+Download Server-TLS bundle from Admin UI and place inside:
+
+```
+certs_credentials/
+```
+
+Required files:
+
+* api_key.txt
+* device_id.txt
+* CA certificate
+
+---
+
+# 📦 Telemetry Payload Schema
+
+Payload ถูก generate โดย logic ที่คล้าย:
+
+```python
+{
+  "device_id": "...",
+  "timestamp": "ISO8601 UTC",
+  "data": {
+    "temperature": float,
+    "temperature_unit": "°C",
+    "humidity": float,
+    "humidity_unit": "%RH",
+    "lux": float,
+    "lux_unit": "cd",
+    "soil": float,
+    "soil_unit": "%V/V"
+  }
+}
+```
+
+---
+
+## 🇹🇭 Sensor Fields
+
+* temperature
+* humidity
+* lux
+* soil
+
+## 🇬🇧 Purpose
+
+Structured telemetry for:
+
+* environmental monitoring
+* agriculture
+* medical lab simulations
+* AI pipeline ingestion
+
+---
+
+# 🚀 Run (HTTPS Server-TLS)
 
 ```bash
 COMM_MODE=HTTPS \
@@ -105,52 +158,41 @@ CERTS_DIR=./certs_credentials \
 ./device_client
 ```
 
-Run — MQTTS (Server‑TLS)
+---
 
-```bash
-COMM_MODE=MQTTS \
-MQTT_HOST=mqtt.tesaiot.com MQTT_PORT=8884 \
-CERTS_DIR=./certs_credentials \
-./device_client
-```
+# 🔐 Security Model
 
-Behavior
+* TLS encryption
+* Server certificate validation
+* API Key authentication
+* No client certificate required
 
-- Builds JSON `{device_id, timestamp, data}` โดยอ่านโครงสร้างฟิลด์จากไฟล์ schema หากมี
-  - ค้นหาอัตโนมัติที่ `../download/data_schema.txt` (หรือกำหนดด้วย `SCHEMA_PATH`)
-  - รองรับชนิด `integer/number/string/boolean` พร้อม minimum/maximum และ `enum` (เลือกค่าตัวแรก)
-  - หากไม่พบไฟล์ schema จะ fallback เป็นฟิลด์ตัวอย่างเดิม
-- HTTPS ใช้เฉพาะ `X-API-KEY: <api_key.txt>` (ไม่ต้องส่ง Bearer)
-- TLS verification is enforced. Do not disable SSL. Paths are read from `CERTS_DIR/`.
-- Reads `endpoints.json` if present and uses `api_base_url` or `ingest_base_url`; also reads `mqtt_host` and `mqtt_tls_port` if present.
-- Device ID is read from `device_id.txt` or overridden by `DEVICE_ID` env var.
+---
 
-องค์ความรู้ (Knowledge)
-- โครงสร้าง payload แบบ schema‑driven: โปรแกรมอ่านสคีมาจาก `../download/data_schema.txt` (หรือ `SCHEMA_PATH`) และสุ่มค่าให้สอดคล้องกับ type/min-max/enum ช่วยให้ทดสอบกับข้อมูลจริงได้รวดเร็ว
-- การเลือกพอร์ต: serverTLS (user/pass) → MQTT ใช้ 8884, HTTPS ใช้ 443; mTLS แยกไป 8883/9444 ตามนโยบาย แยกเส้นทางชัดเจนลดความสับสน
-- การยืนยันสิทธิ์: HTTPS ใช้เฉพาะ `X-API-KEY`, MQTTS ใช้ `username=device_id` และ `password` จาก bundle ที่ include_password=true เท่านั้น และ backend จะตรวจ hash ในฐานข้อมูล
-- ACL โทปิค: อนุญาตเฉพาะ `device/<device_id>/telemetry` สำหรับ publish (subscribe ใช้ `device/<device_id>/commands|config|firmware`)
+# 🧪 Expected Result
 
-Troubleshooting (ข้อผิดพลาดพบบ่อย)
-- HTTPS 401: API key ไม่อัปเดต → ดาวน์โหลด HTTPS bundle ใหม่แบบ include_api_key=true แล้วรัน `./scripts/sync_credentials.sh --device-dir ../download`
-- MQTTS Code 5 (Not authorized): username ไม่ตรงกับ device_id หรือ password หมดอายุ/ยังไม่ได้รีเซ็ต → ดาวน์โหลด MQTT Server‑TLS bundle แบบ include_password=true แล้วซิงค์ใหม่
-- พอร์ตสลับกับ mTLS: ถ้าไป 8883 จะเจอ TLS ปิด connection หลัง CONNECT เพราะโหมดไม่ตรง → ใช้ 8884 สำหรับ serverTLS
-- ACL deny: ตรวจว่า topic เป็น `device/<device_id>/telemetry` และ client_id ตรงกับ `<device_id>`
+* HTTPS 200 response
+* telemetry visible in TESAIoT
+* ready for application-to-platform forwarding into X-brain
 
-Legacy Clients (optional)
+---
 
-- See `./c/` for simple libmosquitto/libcurl senders (kept for comparison). The default build uses Mongoose.
-Test Results (2025‑09‑15) — 2‑minute run
+# 🧩 Integration Notes
 
-- HTTPS Server‑TLS: OK. ส่งสำเร็จทุก 10 วินาทีในช่วง 2 นาที (ต้องแน่ใจว่า `api_key.txt` เป็นชุดล่าสุดจาก HTTPS bundle)
-- MQTTS Server‑TLS (port 8884): OK. ส่งสำเร็จทุก 10 วินาทีในช่วง 2 นาที (หลังซิงค์รหัสผ่านใหม่จาก bundle)
+## TESAIoT Responsibilities
 
-Notes
+* Device onboarding
+* Authentication
+* Data ingestion
 
-- To enable MQTTS in Server‑TLS mode, ensure `mqtt_username.txt` and `mqtt_password.txt` are valid for this device, and that ACL permits publishing to `device/<device_id>/telemetry` on port 8884.
-- TLS verification remained enabled at all times; no SSL weakening.
+## X-brain Responsibilities
 
-Schema Tips
-- วาง `download/data_schema.txt` ไว้ที่โฟลเดอร์ตัวอย่าง หรือกำหนด `SCHEMA_PATH` ให้โปรแกรมอ่าน
-- หาก HTTPS 401 ให้กดดาวน์โหลด HTTPS Server‑TLS bundle ใหม่โดยเลือก include_api_key=true แล้วรันสคริปต์ซิงค์อีกครั้ง:
-  - `./scripts/sync_credentials.sh --device-dir ../download`
+* AI inference
+* Data analytics
+* Model deployment
+
+
+## Troubleshooting (ข้อผิดพลาดพบบ่อย)
+* HTTPS 401: API key ไม่อัปเดต → ดาวน์โหลด HTTPS bundle ใหม่โดยเลือก include_api_key=true แล้วรันสคริปต์ซิงค์อีกครั้ง `./scripts/sync_credentials.sh --device-dir ../download`
+
+---
