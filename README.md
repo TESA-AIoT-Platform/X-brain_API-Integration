@@ -82,8 +82,6 @@ tutorial/examples/
 
 # 🚀 Quick Start
 
----
-
 ## 🔧 Device-to-Platform (HTTPS Server-TLS)
 
 ### 🇹🇭 Use Case
