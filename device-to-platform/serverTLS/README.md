@@ -7,9 +7,7 @@
 
 # 🎯 Objective
 
-## 🇹🇭
-
-ตัวอย่างนี้สาธิต:
+## 🇹🇭 ตัวอย่างนี้สาธิต:
 
 * Device ส่ง telemetry ผ่าน HTTPS Server-TLS
 * ใช้ API Key authentication
@@ -17,9 +15,7 @@
 * โครงสร้าง payload แบบ medical / environment sensor schema
 * เตรียม data pipeline สำหรับ X-brain analytics
 
-## 🇬🇧
-
-This example demonstrates:
+## 🇬🇧 This example demonstrates:
 
 * HTTPS ingestion using Server-TLS
 * API key authentication
@@ -60,12 +56,7 @@ device-to-platform/serverTLS/
 
 # 🔐 Credentials Setup
 
-## 🇹🇭
-
-1. เข้า Admin UI:
-
-[https://admin.tesaiot.com/devices](https://admin.tesaiot.com/devices)
-
+1. เข้า Admin UI: [https://admin.tesaiot.com/devices](https://admin.tesaiot.com/devices)
 2. สร้าง Device
 3. Download Server-TLS credentials
 4. แตกไฟล์ใส่:
@@ -90,9 +81,6 @@ ca_certificate.pem
 * device_id.txt
 * CA certificate
 
----
-
-## 🇬🇧
 
 Download Server-TLS bundle from Admin UI and place inside:
 
