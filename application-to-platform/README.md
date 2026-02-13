@@ -222,15 +222,6 @@ TESAIOT_API_KEY=... python3 app.py stats summary
 - สร้าง unit test สำหรับ `TESAIoTClient` โดย mock `requests.Session`
 - เสริม integration test สำหรับคำสั่ง `devices stream` (เช่น mock WebSocket server)
 
-
-## 13. ช่องทางช่วยเหลือ / Getting Support
-
-- แจ้ง Incident: ช่องทางเดียวกับ TESAIoT Platform (Ops/Support channel)
-- ติดต่อเจ้าหน้าที่ Infineon: eric.seow@infineon.com
-- เจ้าของแพลตฟอร์ม: sriborrirux@gmail.com
-
 > เมื่อเปิด ticket ให้แนบผลจาก `stats summary` + `devices telemetry` เพื่อตรวจสอบสิทธิ์และข้อมูลล่าสุด
 
 ---
-
-ขอให้สนุกกับการเชื่อมต่อ TESAIoT Platform! / Happy building on TESAIoT!
