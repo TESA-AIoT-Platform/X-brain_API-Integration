@@ -1,6 +1,7 @@
 # 🔧 Device → TESAIoT → X-brain Integration (HTTPS Server-TLS)
 
 > 🇹🇭 ตัวอย่างการเชื่อมต่ออุปกรณ์ IoT เข้าสู่ TESAIoT Platform ผ่าน HTTPS (Server-TLS) และเตรียมข้อมูลสำหรับส่งต่อไปยัง X-brain Platform
+
 > 🇬🇧 Example demonstrating secure device-to-platform connectivity using HTTPS Server-TLS, designed for downstream integration with X-brain Platform.
 
 ---
