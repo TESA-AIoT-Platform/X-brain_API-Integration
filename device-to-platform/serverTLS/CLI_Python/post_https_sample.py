@@ -66,38 +66,15 @@ def resolve_base_url(certs_dir: Path, explicit: str | None) -> str:
 def generate_payload(device_id: str) -> dict:
     """Build a telemetry payload that matches the tutorial's medical sensor schema."""
     now = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat()
-    # data = {
-    #     "temperature": round(random.uniform(20.0, 35.0), 2),  
-    #     "temperature_unit": "°C",
-    #     "humidity": round(random.uniform(30.0, 90.0), 2),
-    #     "humidity_unit": "%RH",     
-    #     "lux": round(random.uniform(100.0, 1000.0), 1), 
-    #     "lux_unit": "cd",         
-    #     "soil": round(random.uniform(0.0, 100.0), 2),  
-    #     "soil_unit": "%V/V",         
-    # }
-
-    # Simulate realistic health telemetry
-    steps = random.randint(0, 20)  # steps per interval
-    # ในกรณีที่ระบบ downstream ต้องการ total steps ต่อวัน
-    # step_increment = random.randint(0, 20)
-    # _TOTAL_STEPS += step_increment
-    
-    heartrate = random.randint(55, 130)  # bpm (resting → exercise)
-
-    acc = {
-        "x": round(random.uniform(-2.0, 2.0), 3),
-        "y": round(random.uniform(-2.0, 2.0), 3),
-        "z": round(random.uniform(8.5, 10.5), 3),  # gravity dominant
-        "unit": "m/s^2",
-    }
-
     data = {
-        "steps": steps,
-        # "steps": _TOTAL_STEPS,
-        "heartrate": heartrate,
-        "heartrate_unit": "bpm",
-        "acc": acc,
+        "temperature": round(random.uniform(20.0, 35.0), 2),  
+        "temperature_unit": "°C",
+        "humidity": round(random.uniform(30.0, 90.0), 2),
+        "humidity_unit": "%RH",     
+        "lux": round(random.uniform(100.0, 1000.0), 1), 
+        "lux_unit": "cd",         
+        "soil": round(random.uniform(0.0, 100.0), 2),  
+        "soil_unit": "%V/V",         
     }
 
     return {
